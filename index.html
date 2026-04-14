@@ -3,16 +3,114 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Not Yet 👀</title>
+  <title>Happy Birthday Cali</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulseSoft {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+
+    .fade-in {
+      animation: fadeIn 1.2s ease-out forwards;
+    }
+
+    .play-pulse {
+      animation: pulseSoft 2.5s ease-in-out infinite;
+    }
+  </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-sky-100 via-blue-50 to-cyan-100 flex items-center justify-center px-4">
-
-  <div class="text-center">
-    <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-sky-600 tracking-wide">
-      oops, not yet 👀
+<body class="min-h-screen bg-[#050816] flex items-center justify-center px-6">
+  <main class="text-center max-w-2xl w-full fade-in">
+    <h1 class="text-4xl sm:text-5xl md:text-6xl font-light tracking-wide text-amber-100 mb-4">
+      happy birthday, you.
     </h1>
-  </div>
 
+    <p class="text-slate-300 text-base sm:text-lg font-light mb-12 tracking-wide">
+      hope you're wearing headphones
+    </p>
+
+    <button
+      id="playBtn"
+      class="play-pulse mx-auto w-24 h-24 sm:w-28 sm:h-28 rounded-full border border-amber-200/40 bg-transparent backdrop-blur-sm shadow-none flex items-center justify-center text-amber-100 hover:scale-105 transition duration-300"
+      aria-label="Play birthday audio"
+    >
+      <svg id="playIcon" xmlns="http://www.w3.org/2000/svg" class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path id="iconPath" d="M8 5v14l11-7z" fill="currentColor" stroke="none"/>
+      </svg>
+    </button>
+
+    <p id="subA" class="mt-8 text-amber-100/80 text-lg text-white tracking-wide opacity-0 transition-opacity duration-1000">
+      kalapastangan
+    </p>
+    <p id="subB" class="mt-1 text-gray-400 text-amber-100/70 text-sm tracking-wide opacity-0 transition-opacity duration-1000">
+      (isda version)
+    </p>
+
+    <audio id="birthdayAudio" src="main.mp3"></audio>
+  </main>
+
+  <script>
+    const playBtn = document.getElementById('playBtn');
+    const audio = document.getElementById('birthdayAudio');
+    const iconPath = document.getElementById('iconPath');
+    const subA = document.getElementById('subA');
+    const subB = document.getElementById('subB');
+
+    let isPlaying = false;
+    let subATimer = null;
+    let subBTimer = null;
+
+    function setPlayIcon() {
+      iconPath.setAttribute('d', 'M8 5v14l11-7z');
+      iconPath.setAttribute('fill', 'currentColor');
+      iconPath.setAttribute('stroke', 'none');
+    }
+
+    function setPauseIcon() {
+      iconPath.setAttribute('d', 'M7 5h3v14H7z M14 5h3v14h-3z');
+      iconPath.setAttribute('fill', 'currentColor');
+      iconPath.setAttribute('stroke', 'none');
+    }
+
+    playBtn.addEventListener('click', async () => {
+      try {
+        if (!isPlaying) {
+          await audio.play();
+          isPlaying = true;
+          setPauseIcon();
+
+          subATimer = setTimeout(() => {
+            subA.style.opacity = '1';
+          }, 100);
+
+          subBTimer = setTimeout(() => {
+            subB.style.opacity = '1';
+          }, 1600);
+        } else {
+          audio.pause();
+          isPlaying = false;
+          setPlayIcon();
+        }
+      } catch (err) {
+        console.error('Playback failed:', err);
+      }
+    });
+
+    audio.addEventListener('ended', () => {
+      isPlaying = false;
+      setPlayIcon();
+      playBtn.style.transition = 'opacity 1s ease';
+      playBtn.style.opacity = '0';
+      setTimeout(() => {
+        playBtn.style.display = 'none';
+      }, 1000);
+    });
+  </script>
 </body>
 </html>
